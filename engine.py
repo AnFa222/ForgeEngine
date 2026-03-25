@@ -1,4 +1,3 @@
-from .window import Window
 from .keys import Key
 from .events import Event
 from .time import Time
@@ -12,7 +11,12 @@ import os
 IS_BUILD = hasattr(sys, "_MEIPASS")
 
 class Engine:
-    def __init__(self):
+    def __init__(self, render_pipeline):
+        self.render_pipeline = render_pipeline
+        if self.render_pipeline = "pygame":
+            from .pygamePipeline import Window
+        elif self.renderPipeline = "pyglet":
+            from .pygletPipeline import Window
         self.window = Window(None, None, None)
         self.time = Time()
         self.running = False
