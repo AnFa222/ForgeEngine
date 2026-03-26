@@ -20,12 +20,21 @@ Make sure you have:
 - Python 3.x  
 - Pygame
 - Pyinstaller (optional)
+  For ModernGL Rendering:
+- glfw
+- moderngl
+- numpy
+- pillow
 
 Install dependencies:
 
 ```bash
 pip install pygame
 pip install pyinstaller
+pip install glfw
+pip install moderngl
+pip install numpy
+pip install Pillow
 ```
 
 ---
