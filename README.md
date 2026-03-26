@@ -39,6 +39,12 @@ pip install Pillow
 
 ---
 
+##  Pipelines
+Pygame (Supported)
+ModernGL (Basic Support)
+
+---
+
 ##  Contributing
 
 You’re welcome to contribute!  
