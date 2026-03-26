@@ -7,10 +7,6 @@ from .log import error
 from .utils import check_on_screen
 import sys
 import os
-from .pygamePipeline import Window as PygameRenderer
-from .modernglPipeline import Window as ModernglRenderer
-from .modernglKeyMapping import KEY_MAP as MODERNGL_KEY_MAP
-from .pygameKeyMapping import KEY_MAP as PYGAME_KEY_MAP
 from .pipelines import pygamePipeline, modernGlPipeline
 
 IS_BUILD = hasattr(sys, "_MEIPASS")
@@ -19,9 +15,13 @@ class Engine:
     def __init__(self, render_pipeline):
         self.render_pipeline = render_pipeline
         if self.render_pipeline == pygamePipeline:
+            from .pygamePipeline import Window as PygameRenderer
+            from .pygameKeyMapping import KEY_MAP as PYGAME_KEY_MAP
             self.window = PygameRenderer(None, None, None)
             self.key_map = PYGAME_KEY_MAP
         elif self.render_pipeline == modernGlPipeline:
+            from .modernglPipeline import Window as ModernglRenderer
+            from .modernglKeyMapping import KEY_MAP as MODERNGL_KEY_MAP
             self.window = ModernglRenderer(None, None, None)
             self.key_map = MODERNGL_KEY_MAP
         else:
