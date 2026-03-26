@@ -1,4 +1,3 @@
-from .window import Window
 from .keys import Key
 from .events import Event
 from .time import Time
@@ -8,12 +7,27 @@ from .log import error
 from .utils import check_on_screen
 import sys
 import os
+from .pygamePipeline import Window as PygameRenderer
+from .modernglPipeline import Window as ModernglRenderer
+from .modernglKeyMapping import KEY_MAP as MODERNGL_KEY_MAP
+from .pygameKeyMapping import KEY_MAP as PYGAME_KEY_MAP
+from .pipelines import pygamePipeline, modernGlPipeline
 
 IS_BUILD = hasattr(sys, "_MEIPASS")
 
 class Engine:
-    def __init__(self):
-        self.window = Window(None, None, None)
+    def __init__(self, render_pipeline):
+        self.render_pipeline = render_pipeline
+        if self.render_pipeline == pygamePipeline:
+            self.window = PygameRenderer(None, None, None)
+            self.key_map = PYGAME_KEY_MAP
+        elif self.render_pipeline == modernGlPipeline:
+            self.window = ModernglRenderer(None, None, None)
+            self.key_map = MODERNGL_KEY_MAP
+        else:
+            error("No valid render pipeline chosen.")
+            sys.exit(1)
+        
         self.time = Time()
         self.running = False
         self.objects = []
@@ -116,6 +130,7 @@ class Engine:
         self.running = True
 
         while self.running:
+            self.window.poll_events()
             if Event.QUIT in self.window.get_events():
                 self.running = False
 
@@ -140,7 +155,12 @@ class Engine:
         self.frame_pressed_keys.clear()
         self.frame_released_keys.clear()
 
-        current_pressed = self.window.get_keyboard_input()
+        current_pressed_unmapped = self.window.get_keyboard_input()
+        current_pressed = set()
+
+        for unmapped_key, mapped_key in self.key_map.items():
+            if current_pressed_unmapped[unmapped_key]:
+                current_pressed.add(mapped_key)
 
         for key in current_pressed:
             if key not in self.pressed_keys:

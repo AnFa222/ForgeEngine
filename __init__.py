@@ -7,6 +7,7 @@ from .objectComponents.colliderComponent import Collider, Rectangle, Polygon
 from .objectComponents.textRendererComponent import TextRenderer
 from .build import Build
 from .log import error
+from .pipelines import pygamePipeline, modernGlPipeline
 import sys
 import shutil
 import importlib
