@@ -40,8 +40,8 @@ pip install Pillow
 ---
 
 ##  Pipelines
-Pygame (Supported)
-ModernGL (Basic Support)
+- Pygame (Supported)
+- ModernGL (Basic Support)
 
 ---
 
