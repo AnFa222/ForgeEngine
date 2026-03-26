@@ -1,5 +1,4 @@
 import pygame
-from .keyMapping import KEY_MAP
 from .events import Event
 from .log import error
 from .transformations import rotate
@@ -21,16 +20,9 @@ class Window:
         pygame.display.set_caption(self.title)
 
     def get_keyboard_input(self):
-        pygame.event.pump()
-
         pygame_keys = pygame.key.get_pressed()
-        pressed_keys = set()
 
-        for pg_key, eng_key in KEY_MAP.items():
-            if pygame_keys[pg_key]:
-                pressed_keys.add(eng_key)
-
-        return pressed_keys
+        return pygame_keys
     
     def get_events(self):
         events = set()
@@ -151,3 +143,5 @@ class Window:
             error(f"Error loading image '{path}': {e}. Rendering may not work correctly.")
 
             
+    def poll_events(self):
+        pygame.event.pump()
