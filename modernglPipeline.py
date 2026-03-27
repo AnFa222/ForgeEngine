@@ -38,6 +38,18 @@ class Window:
     def set_finished_audio(self):
         pass
 
+    def get_mouse_input(self):
+        x, y = glfw.get_cursor_pos(self.window)
+
+        buttons = [
+            glfw.get_mouse_button(self.window, glfw.MOUSE_BUTTON_LEFT) == glfw.PRESS,
+            glfw.get_mouse_button(self.window, glfw.MOUSE_BUTTON_RIGHT) == glfw.PRESS,
+            glfw.get_mouse_button(self.window, glfw.MOUSE_BUTTON_MIDDLE) == glfw.PRESS,
+        ]
+
+        return buttons, (x, y)
+
+
     def initialize(self):
         if not glfw.init():
             raise Exception("GLFW init failed")

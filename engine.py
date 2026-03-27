@@ -24,8 +24,10 @@ class Engine:
         elif self.render_pipeline == modernGlPipeline:
             from .modernglPipeline import Window as ModernglRenderer
             from .modernglKeyMapping import KEY_MAP as MODERNGL_KEY_MAP
+            from .modernglKeyMapping import MOUSE_BUTTON_MAP as MODERNGL_MOUSE_BUTTON_MAP
             self.window = ModernglRenderer(None, None, None)
             self.key_map = MODERNGL_KEY_MAP
+            self.mouse_map = MODERNGL_MOUSE_BUTTON_MAP
         else:
             error("No valid render pipeline chosen.")
             sys.exit(1)
@@ -37,7 +39,8 @@ class Engine:
         self.pressed_keys = set()
         self.frame_pressed_keys = set()
         self.frame_released_keys = set()
-        self.mouse_position = (0, 0)
+        self.screen_mouse_position = (0, 0)
+        self.world_mouse_position = (0, 0)
         self.pressed_mouse_buttons = set()
         self.frame_pressed_mouse_buttons = set()
         self.frame_released_mouse_buttons = set()
@@ -190,7 +193,8 @@ class Engine:
         current_pressed = set()
 
         current_mouse_pressed_unmapped, current_mouse_position = self.window.get_mouse_input()
-        self.mouse_position = current_mouse_position
+        self.screen_mouse_position = current_mouse_position
+        self.world_mouse_position = (current_mouse_position[0] + self.camera.transform.x, current_mouse_position[1] + self.camera.transform.y)
         current_mouse_pressed = set()
 
         #Handle Keyboard

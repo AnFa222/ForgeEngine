@@ -73,3 +73,10 @@ KEY_MAP = {
     glfw.KEY_SLASH: Key.SLASH,
     glfw.KEY_GRAVE_ACCENT: Key.GRAVE,
 }
+
+
+MOUSE_BUTTON_MAP = {
+    1: Key.MOUSE_LEFT,
+    2: Key.MOUSE_RIGHT,
+    3: Key.MOUSE_MIDDLE,
+}
