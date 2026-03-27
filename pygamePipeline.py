@@ -156,8 +156,8 @@ class Window:
                 pygame.draw.circle(self.screen, color, (int(center[0]), int(center[1])), int(radius), width)
         self.draw_schedule.clear()
 
-    def clear_screen(self):
-        self.screen.fill((0, 0, 0))
+    def clear_screen(self, background_color):
+        self.screen.fill(background_color)
 
     def update_screen(self):
         pygame.display.flip()

@@ -199,8 +199,8 @@ class Window:
 
 
 
-    def clear_screen(self):
-        self.ctx.clear(0.0, 0.0, 0.0)
+    def clear_screen(self, background_color):
+        self.ctx.clear(*background_color)
 
     def update_screen(self):
         glfw.swap_buffers(self.window)

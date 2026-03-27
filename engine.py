@@ -34,7 +34,10 @@ class Engine:
         
         self.time = Time()
         self.running = False
+        self.scenes = {}
+        self.current_scene = None
         self.objects = []
+        self.background_color = (0, 0, 0)
         self.deltaTime = 0.0
         self.pressed_keys = set()
         self.frame_pressed_keys = set()
@@ -51,8 +54,16 @@ class Engine:
         if IS_BUILD:
             print("Running in build mode.")
 
-    def add_object(self, obj):
-        self.objects.append(obj)
+    def add_scene(self, scene):
+        self.scenes[scene.scene_id] = scene
+
+    def load_scene(self, scene_id):
+        if scene_id in self.scenes:
+            self.current_scene = self.scenes[scene_id]
+            self.objects = self.current_scene.objects
+            self.background_color = self.current_scene.background_color
+        else:
+            error(f"Scene with ID {scene_id} not found. Cannot load scene.")
 
     def get_path(self, relative_path):
         if IS_BUILD:
@@ -149,6 +160,10 @@ class Engine:
 
 
     def main_loop(self):
+        if self.current_scene is None:
+             error("No scene loaded. Please load a scene before starting the main loop.")
+             return
+        
         self.check_incompatible_components()
 
         self.get_cameras()
@@ -168,7 +183,7 @@ class Engine:
             self.time.update(self.deltaTime)
             self.send_object_early_updates()
             self.send_object_updates()
-            self.window.clear_screen()
+            self.window.clear_screen(self.background_color)
             self.render_objects()
             self.window.update_screen()
             self.handle_object_audio()
