@@ -5,6 +5,7 @@ from .objectComponents.rendererComponent import Renderer
 from .objectComponents.transformComponent import Transform
 from .objectComponents.colliderComponent import Collider, Rectangle, Polygon
 from .objectComponents.textRendererComponent import TextRenderer
+from .objectComponents.audioComponent import Audio
 from .build import Build
 from .log import error
 from .pipelines import pygamePipeline, modernGlPipeline

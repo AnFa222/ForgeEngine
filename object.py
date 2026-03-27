@@ -7,11 +7,15 @@ class Object:
         self.collider = None
         self.camera = None
         self.textRenderer = None
+        self.audio = None
         self.tags = []
 
     def update(self):
         if self.script and hasattr(self.script, 'update'):
             self.script.update(thisObject=self, engine=self.engine)
+
+    def add_audio(self, audio_component):
+        self.audio.append(audio_component)
 
     def has_tag(self, tag):
         return tag in self.tags

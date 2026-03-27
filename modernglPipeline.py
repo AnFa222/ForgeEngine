@@ -21,9 +21,22 @@ class Window:
         self.window = None
         self.ctx = None
         self.textures = {}
+        self.audio = {}
 
     def poll_events(self):
         glfw.poll_events()
+
+    def load_audio(self, path, audio_id):
+        pass
+
+    def play_audio(self, audio_id):
+        pass
+
+    def stop_audio(self, audio_id):
+        pass
+
+    def set_finished_audio(self):
+        pass
 
     def initialize(self):
         if not glfw.init():

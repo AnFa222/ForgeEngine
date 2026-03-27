@@ -121,6 +121,24 @@ class Engine:
         if camera_id in self.cameras:
             self.camera = self.cameras[camera_id]
 
+    def handle_object_audio(self):
+        for obj in self.objects:
+            if obj.audio:
+                if obj.audio.play:
+                    if obj.audio.audio_id in self.window.audio:
+                        self.window.play_audio(obj.audio.audio_id)
+                    else:
+                        error(f"Audio ID {obj.audio.audio_id} not found in audio library. Cannot play audio.")
+                if obj.audio.stop:
+                    if obj.audio.audio_id in self.window.audio:
+                        self.window.stop_audio(obj.audio.audio_id)
+                    else:
+                        error(f"Audio ID {obj.audio.audio_id} not found in audio library. Cannot stop audio.")
+                
+                obj.audio.play = False
+                obj.audio.stop = False
+
+
     def main_loop(self):
         self.check_incompatible_components()
 
@@ -144,12 +162,17 @@ class Engine:
             self.window.clear_screen()
             self.render_objects()
             self.window.update_screen()
+            self.handle_object_audio()
 
         print("----------------------------------")
 
     def import_image(self, path, image_id):
         actual_path = self.get_path(path)
         return self.window.load_image(actual_path, image_id)
+    
+    def import_audio(self, path, audio_id):
+        actual_path = self.get_path(path)
+        self.window.load_audio(actual_path, audio_id)
     
     def handle_input(self):
         self.frame_pressed_keys.clear()

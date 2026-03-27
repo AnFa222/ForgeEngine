@@ -13,6 +13,27 @@ class Window:
         self.images = {}
         self.blit_schedule = []
         self.draw_schedule = []
+        self.audio = {}
+
+    def load_audio(self, path, audio_id):
+        try:
+            sound = pygame.mixer.Sound(path)
+            self.audio[audio_id] = sound
+        except Exception as e:
+            error(f"Error loading audio '{path}': {e}. Audio may not work correctly.")
+
+    def play_audio(self, audio_id):
+        if audio_id in self.audio:
+            self.audio[audio_id].play()
+        else:
+            error(f"Audio ID {audio_id} not found in audio library. Cannot play audio.")
+
+    def stop_audio(self, audio_id):
+        if audio_id in self.audio:
+            self.audio[audio_id].stop()
+        else:
+            error(f"Audio ID {audio_id} not found in audio library. Cannot stop audio.")
+        
 
     def initialize(self):
         pygame.init()
