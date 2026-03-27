@@ -197,6 +197,19 @@ class Engine:
     def import_audio(self, path, audio_id):
         actual_path = self.get_path(path)
         self.window.load_audio(actual_path, audio_id)
+
+    def get_key(self, key):
+        return key in self.pressed_keys
+    def get_key_down(self, key):
+        return key in self.frame_pressed_keys
+    def get_key_up(self, key):
+        return key in self.frame_released_keys
+    def get_mouse_button(self, button):
+        return button in self.pressed_mouse_buttons
+    def get_mouse_button_down(self, button):
+        return button in self.frame_pressed_mouse_buttons
+    def get_mouse_button_up(self, button):
+        return button in self.frame_released_mouse_buttons
     
     def handle_input(self):
         self.frame_pressed_keys.clear()
