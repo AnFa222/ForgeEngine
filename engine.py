@@ -17,8 +17,10 @@ class Engine:
         if self.render_pipeline == pygamePipeline:
             from .pygamePipeline import Window as PygameRenderer
             from .pygameKeyMapping import KEY_MAP as PYGAME_KEY_MAP
+            from .pygameKeyMapping import MOUSE_BUTTON_MAP as PYGAME_MOUSE_BUTTON_MAP
             self.window = PygameRenderer(None, None, None)
             self.key_map = PYGAME_KEY_MAP
+            self.mouse_map = PYGAME_MOUSE_BUTTON_MAP
         elif self.render_pipeline == modernGlPipeline:
             from .modernglPipeline import Window as ModernglRenderer
             from .modernglKeyMapping import KEY_MAP as MODERNGL_KEY_MAP
@@ -35,6 +37,10 @@ class Engine:
         self.pressed_keys = set()
         self.frame_pressed_keys = set()
         self.frame_released_keys = set()
+        self.mouse_position = (0, 0)
+        self.pressed_mouse_buttons = set()
+        self.frame_pressed_mouse_buttons = set()
+        self.frame_released_mouse_buttons = set()
         self.camera = None
         self.cameras = {}
         self.debug = False
@@ -177,10 +183,17 @@ class Engine:
     def handle_input(self):
         self.frame_pressed_keys.clear()
         self.frame_released_keys.clear()
+        self.frame_pressed_mouse_buttons.clear()
+        self.frame_released_mouse_buttons.clear()
 
         current_pressed_unmapped = self.window.get_keyboard_input()
         current_pressed = set()
 
+        current_mouse_pressed_unmapped, current_mouse_position = self.window.get_mouse_input()
+        self.mouse_position = current_mouse_position
+        current_mouse_pressed = set()
+
+        #Handle Keyboard
         for unmapped_key, mapped_key in self.key_map.items():
             if current_pressed_unmapped[unmapped_key]:
                 current_pressed.add(mapped_key)
@@ -194,6 +207,21 @@ class Engine:
                 self.frame_released_keys.add(key)
 
         self.pressed_keys = current_pressed
+
+        #Handle Mouse
+        for unmapped_button, mapped_button in self.mouse_map.items():
+            if current_mouse_pressed_unmapped[unmapped_button - 1]:
+                current_mouse_pressed.add(mapped_button)
+
+        for button in current_mouse_pressed:
+            if button not in self.pressed_mouse_buttons:
+                self.frame_pressed_mouse_buttons.add(button)
+
+        for button in self.pressed_mouse_buttons:
+            if button not in current_mouse_pressed:
+                self.frame_released_mouse_buttons.add(button)
+
+        self.pressed_mouse_buttons = current_mouse_pressed
 
     def check_collision(self, obj, objs):
         visible_objs = [

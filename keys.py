@@ -57,3 +57,8 @@ class Key(IntEnum):
     PERIOD=auto()
     SLASH=auto()
     GRAVE=auto()
+
+    # Mouse buttons
+    MOUSE_LEFT=auto()
+    MOUSE_MIDDLE=auto()
+    MOUSE_RIGHT=auto()

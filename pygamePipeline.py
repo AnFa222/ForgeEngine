@@ -45,6 +45,12 @@ class Window:
 
         return pygame_keys
     
+    def get_mouse_input(self):
+        mouse_buttons = pygame.mouse.get_pressed()
+        mouse_position = pygame.mouse.get_pos()
+
+        return mouse_buttons, mouse_position
+    
     def get_events(self):
         events = set()
 

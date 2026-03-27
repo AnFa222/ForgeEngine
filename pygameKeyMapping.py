@@ -73,3 +73,9 @@ KEY_MAP = {
     pygame.K_SLASH: Key.SLASH,
     pygame.K_BACKQUOTE: Key.GRAVE,
 }
+
+MOUSE_BUTTON_MAP = {
+    1: Key.MOUSE_LEFT,
+    2: Key.MOUSE_MIDDLE,
+    3: Key.MOUSE_RIGHT,
+}
