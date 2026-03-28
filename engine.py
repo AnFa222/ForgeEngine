@@ -65,6 +65,15 @@ class Engine:
         else:
             error(f"Scene with ID {scene_id} not found. Cannot load scene.")
 
+    def set_mouse_position(self, position):
+        self.window.set_mouse_pos(position)
+
+    def show_mouse(self):
+        self.window.show_mouse()
+
+    def hide_mouse(self):
+        self.window.hide_mouse()
+
     def get_path(self, relative_path):
         if IS_BUILD:
             return os.path.join(sys._MEIPASS, relative_path)

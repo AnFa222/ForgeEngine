@@ -197,6 +197,14 @@ class Window:
     def draw_debug_shapes(self):
         self.draw_schedule.clear()
 
+    def set_mouse_pos(self, position):
+        glfw.set_cursor_pos(self.window, *position)
+
+    def show_mouse(self):
+        glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_NORMAL)
+
+    def hide_mouse(self):
+        glfw.set_input_mode(self.window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
 
 
     def clear_screen(self, background_color):

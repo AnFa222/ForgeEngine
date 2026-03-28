@@ -122,6 +122,15 @@ class Window:
         rect = image.get_rect(center=(screen_x, screen_y))
 
         self.blit_schedule.append((image, rect.topleft, layer))
+    
+    def set_mouse_pos(self, position):
+        pygame.mouse.set_pos(position)
+
+    def show_mouse(self):
+        pygame.mouse.set_visible(True)
+
+    def hide_mouse(self):
+        pygame.mouse.set_visible(False)
 
     def blit(self):
         self.blit_schedule.sort(key=lambda x: x[2])
