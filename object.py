@@ -9,6 +9,7 @@ class Object:
         self.textRenderer = None
         self.audio = None
         self.tags = []
+        self.active = True
 
     def update(self):
         if self.script and hasattr(self.script, 'update'):

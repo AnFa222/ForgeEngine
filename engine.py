@@ -83,15 +83,18 @@ class Engine:
 
     def send_object_updates(self):
         for obj in self.objects:
-            obj.update()
+            if obj.active:
+                obj.update()
 
     def send_object_start(self):
         for obj in self.objects:
-            obj.start()
+            if obj.active:
+                obj.start()
 
     def send_object_early_updates(self):
         for obj in self.objects:
-            obj.early_update()
+            if obj.active:
+                obj.early_update()
 
     def check_incompatible_components(self):
         for obj in self.objects:
@@ -115,14 +118,14 @@ class Engine:
 
     def render_objects(self):
         for obj in self.objects:
-            if obj.renderer and obj.renderer.visible:
+            if obj.renderer and obj.renderer.visible and obj.active:
                 self.window.schedule_blit(obj.renderer.image_id, (obj.transform.x, obj.transform.y), obj.transform.rotation, obj.transform.scale_x, obj.transform.scale_y, obj.renderer.alpha, obj.renderer.layer, self.camera, obj.renderer.always_render, obj.renderer.cache_id, obj.renderer.dirty, obj.renderer.is_overlay)
             
-            if obj.textRenderer and obj.textRenderer.visible:
+            if obj.textRenderer and obj.textRenderer.visible and obj.active:
                 self.window.schedule_draw_text(obj.textRenderer.text, self.get_path(obj.textRenderer.font_path), obj.textRenderer.font_size, obj.textRenderer.color, (obj.transform.x, obj.transform.y), obj.transform.rotation, obj.transform.scale_x, obj.transform.scale_y, obj.textRenderer.alpha, obj.textRenderer.layer, self.camera, obj.textRenderer.cache_id, obj.textRenderer.always_render, obj.textRenderer.is_overlay, obj.textRenderer.dirty)
 
 
-            if self.debug and obj.collider:
+            if self.debug and obj.collider and obj.active:
                 if hasattr(obj.collider.shape, 'width') and hasattr(obj.collider.shape, 'height'):
                     from .checkCollision import get_rect_corners
                     corners = get_rect_corners(obj, obj.collider)
@@ -137,7 +140,7 @@ class Engine:
 
     def get_cameras(self):
         for obj in self.objects:
-            if obj.camera:
+            if obj.camera and obj.active:
                 if obj.camera.camera_id in self.cameras:
                     error(f"Multiple cameras with ID {obj.camera.camera_id}. Only the first will be used.")
                 self.cameras[obj.camera.camera_id] = obj
@@ -153,7 +156,7 @@ class Engine:
 
     def handle_object_audio(self):
         for obj in self.objects:
-            if obj.audio:
+            if obj.audio and obj.active:
                 if obj.audio.play:
                     if obj.audio.audio_id in self.window.audio:
                         self.window.play_audio(obj.audio.audio_id)
@@ -269,13 +272,13 @@ class Engine:
     def check_collision(self, obj, objs):
         visible_objs = [
             o for o in objs
-            if check_on_screen((o.transform.x, o.transform.y), 
+            if o.active and check_on_screen((o.transform.x, o.transform.y), 
                             o.collider.shape.width if o.collider and hasattr(o.collider.shape, 'width') else 0,
                             o.collider.shape.height if o.collider and hasattr(o.collider.shape, 'height') else 0,
                             self.camera)
         ]
 
-        if obj.collider:
+        if obj.collider and obj.active:
             return check_collision_all(obj, visible_objs)
         return False
     
