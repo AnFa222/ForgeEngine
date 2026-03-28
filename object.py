@@ -8,6 +8,7 @@ class Object:
         self.camera = None
         self.textRenderer = None
         self.audio = None
+        self.kinematic = None
         self.tags = []
         self.active = True
 

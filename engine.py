@@ -96,6 +96,11 @@ class Engine:
             if obj.active:
                 obj.early_update()
 
+    def update_physics(self):
+        for obj in self.objects:
+            if obj.kinematic and obj.active:
+                obj.kinematic.update(obj, self)
+
     def check_incompatible_components(self):
         for obj in self.objects:
             if obj.renderer and not obj.transform:
@@ -196,6 +201,7 @@ class Engine:
             self.handle_input()
             self.time.update(self.deltaTime)
             self.send_object_early_updates()
+            self.update_physics()
             self.send_object_updates()
             self.window.clear_screen(self.background_color)
             self.render_objects()
