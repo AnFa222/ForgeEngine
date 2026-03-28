@@ -48,6 +48,7 @@ class Engine:
         self.frame_pressed_mouse_buttons = set()
         self.frame_released_mouse_buttons = set()
         self.camera = None
+        self.objects_to_destroy = []
         self.cameras = {}
         self.debug = False
 
@@ -188,6 +189,7 @@ class Engine:
             self.deltaTime = time.time() - self.last_time
             self.last_time = time.time()
 
+            self.destroy_objects()
             self.handle_input()
             self.time.update(self.deltaTime)
             self.send_object_early_updates()
@@ -277,8 +279,14 @@ class Engine:
             return check_collision_all(obj, visible_objs)
         return False
     
+    def destroy_objects(self):
+        for obj in self.objects_to_destroy:
+            if obj in self.objects:
+                self.objects.remove(obj)
+        self.objects_to_destroy.clear()
+    
     def destroy(self, obj):
         if obj in self.objects:
-            self.objects.remove(obj)
+            self.objects_to_destroy.append(obj)
         else:
             error(f"Attempted to destroy and invalid object {obj}.")
