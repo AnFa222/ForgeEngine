@@ -11,6 +11,8 @@ from .scene import Scene
 from .build import Build
 from .log import error
 from .pipelines import pygamePipeline, modernGlPipeline
+from .keys import Key
+from .events import Event
 import sys
 import shutil
 import importlib
