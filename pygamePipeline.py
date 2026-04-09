@@ -98,30 +98,37 @@ class Window:
         
 
 
-
-    def schedule_blit(self, image_id, position, rotation, scalex, scaley, alpha, layer, camera, always_render, cache_id, is_dirty, is_overlay):
-        image = self.preprocessed_images.get(image_id)
-        image_width = image.get_width() * scalex
-        image_height = image.get_height() * scaley
-
-        if not check_on_screen(position, image_width * scalex, image_height * scaley, camera) and not always_render and not is_overlay:
-            return
-        
-        if cache_id not in self.images or is_dirty:
-            self.process_image(image_id, scalex, scaley, rotation, alpha, cache_id)
-
-        image = self.images[cache_id]
-
-        if not is_overlay:
-            screen_x = position[0] - camera.transform.x
-            screen_y = position[1] - camera.transform.y
+    def schedule_blit(self, obj, position, rotation=0, scalex=1, scaley=1, alpha=255,
+                    layer=0, camera=None, always_render=False, cache_id=None, is_dirty=False, is_overlay=False):
+        #obj: either an int (image_id) or a mesh [[image_id, offset_x, offset_y], ...]
+        if isinstance(obj, int):
+            mesh = [[obj, 0, 0]]
         else:
-            screen_x = position[0]
-            screen_y = position[1]
+            mesh = obj
 
-        rect = image.get_rect(center=(screen_x, screen_y))
+        for image_id, offset_x, offset_y in mesh:
+            quad_pos = (position[0] + offset_x, position[1] + offset_y)
 
-        self.blit_schedule.append((image, rect.topleft, layer))
+            image = self.preprocessed_images.get(image_id)
+            image_width = image.get_width() * scalex
+            image_height = image.get_height() * scaley
+
+            if not check_on_screen(quad_pos, image_width, image_height, camera) and not always_render and not is_overlay:
+                continue
+
+            if cache_id not in self.images or is_dirty:
+                self.process_image(image_id, scalex, scaley, rotation, alpha, cache_id)
+            image = self.images[cache_id]
+
+            if not is_overlay:
+                screen_x = quad_pos[0] - camera.transform.x
+                screen_y = quad_pos[1] - camera.transform.y
+            else:
+                screen_x = quad_pos[0]
+                screen_y = quad_pos[1]
+
+            rect = image.get_rect(center=(screen_x, screen_y))
+            self.blit_schedule.append((image, rect.topleft, layer))
     
     def set_mouse_pos(self, position):
         pygame.mouse.set_pos(position)
