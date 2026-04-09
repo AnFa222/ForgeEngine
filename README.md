@@ -13,18 +13,22 @@ It includes:
 
 ---
 
-##  Requirements
+## Requirements
 
-Make sure you have:
+### Python
+- Python 3.x
 
-- Python 3.x  
-- Pygame
-- Pyinstaller (optional)
-  For ModernGL Rendering:
+### Pygame Pipeline
+- pygame
+
+### ModernGL Pipeline (optional)
 - glfw
 - moderngl
 - numpy
 - pillow
+
+### Build Release (optional)
+- pyinstaller
 
 Install dependencies:
 
@@ -34,13 +38,13 @@ pip install pyinstaller
 pip install glfw
 pip install moderngl
 pip install numpy
-pip install Pillow
+pip install pillow
 ```
 
 ---
 
 ##  Pipelines
-- Pygame (Supported)
+- Pygame (Fully Supported)
 - ModernGL (Basic Support)
 
 ---
