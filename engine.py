@@ -289,13 +289,9 @@ class Engine:
         return False
     
     def destroy_objects(self):
-        for obj in self.objects_to_destroy:
-            if obj in self.objects:
-                self.objects.remove(obj)
-        self.objects_to_destroy.clear()
+        for obj in self.current_scene.objects_to_destroy:
+            if obj in self.current_scene.objects:
+                self.current_scene.objects.remove(obj)
+        self.current_scene.objects_to_destroy.clear()
+
     
-    def destroy(self, obj):
-        if obj in self.objects:
-            self.objects_to_destroy.append(obj)
-        else:
-            error(f"Attempted to destroy and invalid object {obj}.")
