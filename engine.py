@@ -52,8 +52,42 @@ class Engine:
         self.cameras = {}
         self.debug = False
 
+        self.has_audio_components = []
+        self.has_camera_components = []
+        self.has_collider_components = []
+        self.has_renderer_components = []
+        self.has_text_renderer_components = []
+        self.has_kinematic_components = []
+        self.has_transform_components = []
+
         if IS_BUILD:
             print("Running in build mode.")
+
+    def get_components(self):
+        self.has_audio_components = []
+        self.has_camera_components = []
+        self.has_collider_components = []
+        self.has_renderer_components = []
+        self.has_text_renderer_components = []
+        self.has_kinematic_components = []
+        self.has_transform_components = []
+
+        for obj in self.objects:
+            if obj.active:
+                if obj.audio:
+                    self.has_audio_components.append(obj)
+                if obj.camera:
+                    self.has_camera_components.append(obj)
+                if obj.collider:
+                    self.has_collider_components.append(obj)
+                if obj.renderer:
+                    self.has_renderer_components.append(obj)
+                if obj.textRenderer:
+                    self.has_text_renderer_components.append(obj)
+                if obj.kinematic:
+                    self.has_kinematic_components.append(obj)
+                if obj.transform:
+                    self.has_transform_components.append(obj)
 
     def add_scene(self, scene):
         self.scenes[scene.scene_id] = scene
@@ -97,9 +131,8 @@ class Engine:
                 obj.early_update()
 
     def update_physics(self):
-        for obj in self.objects:
-            if obj.kinematic and obj.active:
-                obj.kinematic.update(obj, self)
+        for obj in self.has_kinematic_components:
+            obj.kinematic.update(obj, self)
 
     def check_incompatible_components(self):
         for obj in self.objects:
@@ -122,15 +155,10 @@ class Engine:
 
 
     def render_objects(self):
-        for obj in self.objects:
-            if obj.renderer and obj.renderer.visible and obj.active:
-                self.window.schedule_blit(obj.renderer.image_id, (obj.transform.x, obj.transform.y), obj.transform.rotation, obj.transform.scale_x, obj.transform.scale_y, obj.renderer.alpha, obj.renderer.layer, self.camera, obj.renderer.always_render, obj.renderer.cache_id, obj.renderer.dirty, obj.renderer.is_overlay)
-            
-            if obj.textRenderer and obj.textRenderer.visible and obj.active:
-                self.window.schedule_draw_text(obj.textRenderer.text, self.get_path(obj.textRenderer.font_path), obj.textRenderer.font_size, obj.textRenderer.color, (obj.transform.x, obj.transform.y), obj.transform.rotation, obj.transform.scale_x, obj.transform.scale_y, obj.textRenderer.alpha, obj.textRenderer.layer, self.camera, obj.textRenderer.cache_id, obj.textRenderer.always_render, obj.textRenderer.is_overlay, obj.textRenderer.dirty)
+        for obj in self.has_renderer_components:
+            self.window.schedule_blit(obj.renderer.image_id, (obj.transform.x, obj.transform.y), obj.transform.rotation, obj.transform.scale_x, obj.transform.scale_y, obj.renderer.alpha, obj.renderer.layer, self.camera, obj.renderer.always_render, obj.renderer.cache_id, obj.renderer.dirty, obj.renderer.is_overlay)
 
-
-            if self.debug and obj.collider and obj.active:
+            if self.debug and obj.collider:
                 if hasattr(obj.collider.shape, 'width') and hasattr(obj.collider.shape, 'height'):
                     from .checkCollision import get_rect_corners
                     corners = get_rect_corners(obj, obj.collider)
@@ -140,15 +168,18 @@ class Engine:
                     points = get_polygon_world_points(obj, obj.collider)
                     self.window.schedule_draw_polygon(points, (0, 255, 255), 2, 999, self.camera)
 
+        for obj in self.has_text_renderer_components:
+            self.window.schedule_draw_text(obj.textRenderer.text, self.get_path(obj.textRenderer.font_path), obj.textRenderer.font_size, obj.textRenderer.color, (obj.transform.x, obj.transform.y), obj.transform.rotation, obj.transform.scale_x, obj.transform.scale_y, obj.textRenderer.alpha, obj.textRenderer.layer, self.camera, obj.textRenderer.cache_id, obj.textRenderer.always_render, obj.textRenderer.is_overlay, obj.textRenderer.dirty)
+
+
         self.window.blit()
         self.window.draw_debug_shapes()
 
     def get_cameras(self):
-        for obj in self.objects:
-            if obj.camera and obj.active:
-                if obj.camera.camera_id in self.cameras:
-                    error(f"Multiple cameras with ID {obj.camera.camera_id}. Only the first will be used.")
-                self.cameras[obj.camera.camera_id] = obj
+        for obj in self.has_camera_components:
+            if obj.camera.camera_id in self.cameras:
+                error(f"Multiple cameras with ID {obj.camera.camera_id}. Only the first will be used.")
+            self.cameras[obj.camera.camera_id] = obj
 
 
         if len(self.cameras) == 0:
@@ -160,21 +191,20 @@ class Engine:
             self.camera = self.cameras[camera_id]
 
     def handle_object_audio(self):
-        for obj in self.objects:
-            if obj.audio and obj.active:
-                if obj.audio.play:
-                    if obj.audio.audio_id in self.window.audio:
-                        self.window.play_audio(obj.audio.audio_id)
-                    else:
-                        error(f"Audio ID {obj.audio.audio_id} not found in audio library. Cannot play audio.")
-                if obj.audio.stop:
-                    if obj.audio.audio_id in self.window.audio:
-                        self.window.stop_audio(obj.audio.audio_id)
-                    else:
-                        error(f"Audio ID {obj.audio.audio_id} not found in audio library. Cannot stop audio.")
-                
-                obj.audio.play = False
-                obj.audio.stop = False
+        for obj in self.has_audio_components:
+            if obj.audio.play:
+                if obj.audio.audio_id in self.window.audio:
+                    self.window.play_audio(obj.audio.audio_id)
+                else:
+                    error(f"Audio ID {obj.audio.audio_id} not found in audio library. Cannot play audio.")
+            if obj.audio.stop:
+                if obj.audio.audio_id in self.window.audio:
+                    self.window.stop_audio(obj.audio.audio_id)
+                else:
+                    error(f"Audio ID {obj.audio.audio_id} not found in audio library. Cannot stop audio.")
+            
+            obj.audio.play = False
+            obj.audio.stop = False
 
 
     def main_loop(self):
@@ -182,7 +212,10 @@ class Engine:
              error("No scene loaded. Please load a scene before starting the main loop.")
              return
         
-        self.check_incompatible_components()
+        if self.debug:
+            self.check_incompatible_components()
+
+        self.get_components()
 
         self.get_cameras()
         self.send_object_start()
@@ -193,6 +226,8 @@ class Engine:
             self.window.poll_events()
             if Event.QUIT in self.window.get_events():
                 self.running = False
+
+            self.get_components()
 
             self.deltaTime = time.time() - self.last_time
             self.last_time = time.time()
