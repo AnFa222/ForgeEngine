@@ -14,16 +14,18 @@ class Animation:
             return
 
         self.elapsed_time += delta_time
-        while self.elapsed_time >= self.frame_duration:
-            self.elapsed_time -= self.frame_duration
-            self.current_frame += 1
-            if self.current_frame >= len(self.frame_ids):
-                if self.loop:
-                    self.current_frame = 0
-                else:
-                    self.current_frame = len(self.frame_ids) - 1
-                    self.playing = False
-                    break
+        if self.elapsed_time < self.frame_duration:
+            return
+
+        frames_to_advance = int(self.elapsed_time // self.frame_duration)
+        self.elapsed_time -= frames_to_advance * self.frame_duration
+
+        if self.loop:
+            self.current_frame = (self.current_frame + frames_to_advance) % len(self.frame_ids)
+        else:
+            self.current_frame = min(self.current_frame + frames_to_advance, len(self.frame_ids) - 1)
+            if self.current_frame == len(self.frame_ids) - 1:
+                self.playing = False
 
     def get_current_frame(self):
         if len(self.frame_ids) == 0:

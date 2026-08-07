@@ -72,6 +72,7 @@ class Engine:
         self.has_text_renderer_components = []
         self.has_kinematic_components = []
         self.has_transform_components = []
+        self.has_animation_components = []
 
         for obj in self.objects:
             if obj.active:
@@ -233,7 +234,7 @@ class Engine:
 
         self.get_cameras()
         self.send_object_start()
-        self.last_time = time.time()
+        self.last_time = time.perf_counter()
         self.running = True
 
         while self.running:
@@ -243,8 +244,9 @@ class Engine:
 
             self.get_components()
 
-            self.deltaTime = time.time() - self.last_time
-            self.last_time = time.time()
+            current_time = time.perf_counter()
+            self.deltaTime = current_time - self.last_time
+            self.last_time = current_time
 
             self.destroy_objects()
             self.handle_input()
