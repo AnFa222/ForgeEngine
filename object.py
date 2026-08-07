@@ -3,6 +3,7 @@ class Object:
         self.engine = engine
         self.transform = None
         self.renderer = None
+        self.animation = None
         self.script = None
         self.collider = None
         self.camera = None

@@ -59,6 +59,7 @@ class Engine:
         self.has_text_renderer_components = []
         self.has_kinematic_components = []
         self.has_transform_components = []
+        self.has_animation_components = []
 
         if IS_BUILD:
             print("Running in build mode.")
@@ -88,6 +89,8 @@ class Engine:
                     self.has_kinematic_components.append(obj)
                 if obj.transform:
                     self.has_transform_components.append(obj)
+                if obj.animation:
+                    self.has_animation_components.append(obj)
 
     def add_scene(self, scene):
         self.scenes[scene.scene_id] = scene
@@ -134,6 +137,11 @@ class Engine:
         for obj in self.has_kinematic_components:
             obj.kinematic.update(obj, self)
 
+    def update_animations(self):
+        for obj in self.has_animation_components:
+            if obj.animation and obj.active:
+                obj.animation.update(self.deltaTime)
+
     def check_incompatible_components(self):
         for obj in self.objects:
             if obj.renderer and not obj.transform:
@@ -156,7 +164,13 @@ class Engine:
 
     def render_objects(self):
         for obj in self.has_renderer_components:
-            self.window.schedule_blit(obj.renderer.image_id, (obj.transform.x, obj.transform.y), obj.transform.rotation, obj.transform.scale_x, obj.transform.scale_y, obj.renderer.alpha, obj.renderer.layer, self.camera, obj.renderer.always_render, obj.renderer.cache_id, obj.renderer.dirty, obj.renderer.is_overlay)
+            image_id = obj.renderer.image_id
+            if obj.animation:
+                current_frame = obj.animation.get_current_frame()
+                if current_frame is not None:
+                    image_id = current_frame
+
+            self.window.schedule_blit(image_id, (obj.transform.x, obj.transform.y), obj.transform.rotation, obj.transform.scale_x, obj.transform.scale_y, obj.renderer.alpha, obj.renderer.layer, self.camera, obj.renderer.always_render, obj.renderer.cache_id, obj.renderer.dirty, obj.renderer.is_overlay)
 
             if self.debug and obj.collider:
                 if hasattr(obj.collider.shape, 'width') and hasattr(obj.collider.shape, 'height'):
@@ -237,6 +251,7 @@ class Engine:
             self.time.update(self.deltaTime)
             self.send_object_early_updates()
             self.update_physics()
+            self.update_animations()
             self.send_object_updates()
             self.window.clear_screen(self.background_color)
             self.render_objects()
