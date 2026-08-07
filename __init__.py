@@ -13,6 +13,7 @@ from .log import error
 from .pipelines import pygamePipeline, modernGlPipeline
 from .keys import Key
 from .events import Event
+from .mathUtils import fMath
 import sys
 import shutil
 import importlib
