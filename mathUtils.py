@@ -1,7 +1,5 @@
 import math
 
-from pygame import Vector2
-
 class fMath:
     @staticmethod
     def normalize(vec):
