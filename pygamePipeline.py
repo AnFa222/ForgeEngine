@@ -100,8 +100,8 @@ class Window:
 
     def schedule_blit(self, obj, position, rotation=0, scalex=1, scaley=1, alpha=255,
                     layer=0, camera=None, always_render=False, cache_id=None, is_dirty=False, is_overlay=False):
-        #obj: either an int (image_id) or a mesh [[image_id, offset_x, offset_y], ...]
-        if isinstance(obj, int):
+        # obj: either a single image_id or a mesh [[image_id, offset_x, offset_y], ...]
+        if not isinstance(obj, (list, tuple)):
             mesh = [[obj, 0, 0]]
         else:
             mesh = obj

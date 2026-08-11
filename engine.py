@@ -8,6 +8,7 @@ from .utils import check_on_screen
 import sys
 import os
 from .pipelines import pygamePipeline, modernGlPipeline
+from enum import auto
 
 IS_BUILD = hasattr(sys, "_MEIPASS")
 
@@ -262,13 +263,17 @@ class Engine:
 
         print("----------------------------------")
 
-    def import_image(self, path, image_id):
+    def import_image(self, path):
         actual_path = self.get_path(path)
-        return self.window.load_image(actual_path, image_id)
+        image_id = auto()
+        self.window.load_image(actual_path, image_id)
+        return image_id
     
-    def import_audio(self, path, audio_id):
+    def import_audio(self, path):
         actual_path = self.get_path(path)
+        audio_id = auto()
         self.window.load_audio(actual_path, audio_id)
+        return audio_id
 
     def get_key(self, key):
         return key in self.pressed_keys
