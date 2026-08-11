@@ -141,8 +141,7 @@ class Window:
 
     def blit(self):
         self.blit_schedule.sort(key=lambda x: x[2])
-        for image, position, _ in self.blit_schedule:
-            self.screen.blit(image, position)
+        self.screen.blits([(image, pos) for image, pos, _ in self.blit_schedule])
         self.blit_schedule.clear()
 
     def schedule_draw_polygon(self, points, color, width, layer, camera):
